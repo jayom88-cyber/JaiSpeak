@@ -5,326 +5,302 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Digital Houdini | J&V Future Ventures</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <style>
         body {
-            /* Master Background Image with Subtle UI Contrast Overlay */
-            background-image: linear-gradient(rgba(11, 15, 25, 0.4), rgba(0, 0, 0, 0.8)), url('https://meshekatlan.com/wp-content/uploads/2026/05/Gemini_Generated_Image_-4.png');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
+            background-color: #0b0f19; 
             color: #f1f5f9;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
             overflow-x: hidden;
-            min-height: 100vh;
         }
-
-        .portal-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-            border-radius: 1rem;
-            background-color: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            text-decoration: none;
-            color: #e2e8f0;
-        }
-
-        .portal-btn:hover {
-            transform: translateY(-3px);
-            background-color: rgba(220, 38, 38, 0.2);
-            color: #fff;
-            border-color: rgba(220, 38, 38, 0.5);
-            box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.2);
-        }
-
-        .vault-btn {
-            background: linear-gradient(135deg, rgba(76, 29, 149, 0.8) 0%, rgba(147, 51, 234, 0.8) 100%);
-            border: 1px solid #fbbf24;
-            color: #fde68a;
-            box-shadow: 0 4px 20px rgba(147, 51, 234, 0.3);
-        }
-
-        .vault-btn:hover {
-            background: linear-gradient(135deg, #5b21b6 0%, #a855f7 100%);
-            color: #fff;
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.5);
-            border-color: #fde68a;
-        }
-
-        /* The Glassmorphism Engine Block */
         .glass-panel {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-
-        /* The Ignition Button */
-        .ignition-btn {
-            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-            border: 1px solid #f87171;
-            box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);
-            transition: all 0.3s ease;
+        .ferrari-glow {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
         }
-
-        .ignition-btn:hover {
-            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-            box-shadow: 0 0 25px rgba(220, 38, 38, 0.7);
-            transform: translateY(-2px);
-        }
-
-        /* The Console Output */
-        .telemetry-console {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px inset rgba(255, 255, 255, 0.05);
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
-        }
-
-        /* Custom Scrollbar for the console */
         ::-webkit-scrollbar {
             width: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.2); 
+            background: #0b0f19;
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2); 
-            border-radius: 10px;
-        }
-
-        /* Modal UI Styling */
-        #wp-modal {
-            display: none;
+            background: #334155;
+            border-radius: 3px;
         }
     </style>
 </head>
-<body class="flex flex-col items-center py-10 px-4 relative">
+<body class="min-h-screen flex flex-col justify-between antialiased">
 
-    <!-- MONETIZATION CONSOLE (GLASSMORPHISM) -->
-    <div class="fixed top-4 right-4 flex flex-col space-y-3 z-50">
-        <a href="https://cash.app/$JayBonilla9" target="_blank" class="backdrop-blur-md bg-slate-900/60 border border-slate-500/50 text-emerald-400 text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-slate-800/90 hover:border-emerald-400 transition-all shadow-2xl flex items-center justify-center gap-2">
-            <span>💸</span> Cash App
-        </a>
-    </div>
-
-    <!-- WORDPRESS UI MODAL -->
-    <div id="wp-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md px-4">
-        <div class="w-full max-w-4xl h-[85vh] bg-slate-900 border border-red-500/50 rounded-2xl shadow-2xl flex flex-col overflow-hidden relative">
-            <div class="bg-black/80 px-4 py-3 border-b border-red-900/50 flex justify-between items-center">
-                <span class="text-red-500 font-bold tracking-widest text-sm uppercase">✍️ WordPress Editorial Hub</span>
-                <button onclick="closeWordPressModal()" class="text-slate-400 hover:text-white font-bold text-xl transition-colors">&times;</button>
-            </div>
-            <iframe id="wp-iframe" class="w-full h-full border-none" src=""></iframe>
-        </div>
-    </div>
-
-    <main class="w-full max-w-md w-full relative z-10">
-        
-        <header class="flex flex-col items-center mb-8">
-            <div class="w-24 h-24 rounded-2xl bg-slate-800/80 backdrop-blur-sm border border-slate-600 overflow-hidden mb-4 shadow-2xl flex items-center justify-center transform rotate-3 hover:rotate-0 transition-transform duration-300">
-                <span class="text-3xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-white to-slate-500">J&V</span>
-            </div>
-            <!-- Dashboard Typography -->
-            <h1 class="text-3xl font-black tracking-tight mb-1 text-white uppercase">Jairo Bonilla</h1>
-            <h2 class="text-red-500 text-sm font-bold mb-2 uppercase tracking-[0.2em]">The Digital Houdini</h2>
-        </header>
-
-        <!-- TTS CHUNKING SANDBOX (The Ferrari Engine) -->
-        <section class="w-full p-6 glass-panel rounded-3xl relative mt-4">
-            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-4 py-1 text-xs font-black uppercase tracking-widest rounded-full shadow-lg shadow-red-500/50 border border-red-400">
-                Proprietary TTS Engine
-            </div>
-            
-            <h3 class="text-2xl font-bold mb-1 mt-4 text-white text-center">Vocal Architecture</h3>
-            <p class="text-xs text-slate-400 mb-6 text-center tracking-wide">
-                Bypass server limits. Initiate chunking sequence.
-            </p>
-            
-            <!-- Voice Selection Dropdown -->
-            <div class="mb-4">
-                <label for="voice-select" class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Audio Output Module</label>
-                <select id="voice-select" class="w-full bg-slate-900/80 border border-slate-700 text-slate-200 text-sm rounded-xl focus:ring-red-500 focus:border-red-500 block p-3 appearance-none transition-colors">
-                    <option value="">Loading neural voices...</option>
-                </select>
-            </div>
-
-            <textarea id="tts-input" class="w-full bg-black/40 border border-slate-700 rounded-xl p-4 text-sm text-slate-200 mb-5 h-36 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all resize-none shadow-inner" placeholder="Paste your 1,000-word essay or script here..."></textarea>
-            
-            <button id="tts-play-btn" class="ignition-btn w-full text-white font-black uppercase tracking-widest py-4 px-4 rounded-xl flex items-center justify-center space-x-2">
-                <span>Initiate Chunking</span>
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            </button>
-
-            <div class="mt-6 p-4 telemetry-console rounded-xl">
-                <div class="flex justify-between items-center text-xs font-mono mb-3 border-b border-slate-700/50 pb-2">
-                    <span class="text-slate-500 uppercase tracking-wider">System Status</span>
-                    <span id="tts-status" class="text-red-400 font-bold animate-pulse">Standby</span>
+    <header class="w-full max-w-4xl mx-auto px-4 pt-6">
+        <div class="glass-panel rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="h-3 w-3 rounded-full bg-red-500 animate-pulse"></div>
+                <div>
+                    <h1 class="text-sm font-bold uppercase tracking-widest text-slate-200">The Digital Houdini</h1>
+                    <p class="text-xs text-slate-400">J&V FUTURE VENTURES • CUSTOM TTS ENGINE</p>
                 </div>
-                <ul id="chunk-list" class="text-xs text-slate-400 font-mono space-y-2 max-h-32 overflow-y-auto pr-2">
-                    <li class="opacity-50 italic">Awaiting data stream...</li>
-                </ul>
             </div>
-        </section>
-        
-        <!-- COMPLETE ROUTING HUB -->
-        <section class="flex flex-col w-full space-y-3 mt-8">
-            <a href="YOUR_CURI_LINK_HERE" class="portal-btn">
-                <span class="text-sm font-bold tracking-wide">🩹 The Curi Band-Aid App</span>
-            </a>
-            
-            <!-- Live Discord Integration -->
-            <a href="https://discord.gg/JuvqttHm" target="_blank" class="portal-btn">
-                <span class="text-sm font-bold tracking-wide">🦅 NYC Falcon Discord</span>
-            </a>
-            
-            <a href="YOUR_MUSIC_LINK_HERE" class="portal-btn">
-                <span class="text-sm font-bold tracking-wide">🎹 Trilingual Compositions</span>
-            </a>
-            
-            <!-- Triggers the Modal -->
-            <button onclick="openWordPressModal('https://meshekatlan.com')" class="portal-btn cursor-pointer">
-                <span class="text-sm font-bold tracking-wide">✍️ WordPress Journals</span>
-            </button>
-            
-            <a href="YOUR_VAULT_LINK_HERE" class="portal-btn vault-btn flex flex-col mt-4">
-                <span class="text-xl mb-1">🗝️ Enter The Vault</span>
-                <span class="text-xs font-normal opacity-90">Premium Code, R&D Docs & Stems</span>
-            </a>
-        </section>
+            <div class="flex items-center gap-2">
+                <span class="text-[10px] bg-slate-800 text-slate-400 font-mono px-2 py-1 rounded border border-slate-700">v1.2-LIVE</span>
+                <span id="system-status" class="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">System Idle</span>
+            </div>
+        </div>
+    </header>
 
+    <main class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-4xl glass-panel ferrari-glow rounded-3xl p-6 sm:p-8 space-y-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Active Voice Matrix</label>
+                    <select id="voice-selection" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-red-500 transition-colors">
+                        <option value="">Loading Hardware Voices...</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Engine Controller Panel</label>
+                    <div class="grid grid-cols-5 gap-2">
+                        <button id="btn-prev" class="bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-xl font-bold transition-all transform active:scale-95 border border-slate-700">⏮</button>
+                        <button id="btn-stop" class="bg-slate-800 hover:bg-red-950/40 text-red-400 py-3 rounded-xl font-bold transition-all transform active:scale-95 border border-slate-700 hover:border-red-900">⏹</button>
+                        <button id="btn-start" class="col-span-2 bg-red-600 hover:bg-red-500 text-white py-3 rounded-xl font-bold uppercase tracking-wider text-sm transition-all transform active:scale-95 shadow-lg shadow-red-600/20">Execute</button>
+                        <button id="btn-next" class="bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-xl font-bold transition-all transform active:scale-95 border border-slate-700">⏭</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button id="btn-pause-resume" class="hidden text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono font-bold uppercase px-4 py-2 rounded-lg border border-slate-700 transition-all">⏸ Pause</button>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Vocal Manifestation Repository</label>
+                <textarea id="raw-text-input" class="w-full h-48 bg-slate-950 border border-slate-800 rounded-2xl p-4 text-sm font-mono leading-relaxed text-slate-300 focus:outline-none focus:border-red-500/50 transition-colors resize-none" placeholder="Inject text infrastructure here to break down and manifest locally..."></textarea>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Engine Chunk Orchestrator</label>
+                <div class="w-full h-40 bg-slate-950 border border-slate-800 rounded-2xl p-4 overflow-y-auto">
+                    <ul id="chunk-list-display" class="space-y-2 font-mono text-xs text-slate-500">
+                        <li class="italic text-slate-600">> System stands ready. Provide text to initialize parsing array...</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
     </main>
 
+    <footer class="w-full max-w-4xl mx-auto px-4 pb-6 text-center">
+        <p class="text-[10px] text-slate-600 font-mono uppercase tracking-widest">Jai-Verse Digital Ecosystem • Secure Data Vault Infrastructure</p>
+    </footer>
+
     <script>
-        // --- MODAL LOGIC FOR WORDPRESS INTEGRATION ---
-        function openWordPressModal(url) {
-            document.getElementById('wp-iframe').src = url;
-            document.getElementById('wp-modal').style.display = 'flex';
-        }
+        // Native Hardware Integration Layer
+        const JaiVerse = {
+            Voice: {
+                synth: window.speechSynthesis,
+                speakNative: function(text, voice, onEndCallback = null) {
+                    this.synth.cancel(); 
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    if (voice) utterance.voice = voice;
+                    if (onEndCallback) utterance.onend = onEndCallback;
+                    this.synth.speak(utterance);
+                },
+                cancel: function() {
+                    this.synth.cancel();
+                }
+            }
+        };
 
-        function closeWordPressModal() {
-            document.getElementById('wp-modal').style.display = 'none';
-            document.getElementById('wp-iframe').src = '';
-        }
-
-        // --- TTS ENGINE LOGIC ---
         document.addEventListener('DOMContentLoaded', () => {
-            const textInput = document.getElementById('tts-input');
-            const playBtn = document.getElementById('tts-play-btn');
-            const statusDisplay = document.getElementById('tts-status');
-            const chunkListDisplay = document.getElementById('chunk-list');
-            const voiceSelect = document.getElementById('voice-select');
+            // UI Element Handles
+            const voiceSelection = document.getElementById('voice-selection');
+            const statusDisplay = document.getElementById('system-status');
+            const rawTextInput = document.getElementById('raw-text-input');
+            const chunkListDisplay = document.getElementById('chunk-list-display');
+            
+            const btnStart = document.getElementById('btn-start');
+            const btnStop = document.getElementById('btn-stop');
+            const btnPauseResume = document.getElementById('btn-pause-resume');
+            const btnNext = document.getElementById('btn-next');
+            const btnPrev = document.getElementById('btn-prev');
 
-            let voices = [];
+            // Engine Tracking Matrices
+            let globalChunks = [];
+            let currentChunkIndex = 0;
+            let isPaused = false;
+            let isRunning = false;
+            let intentionalSkip = false;
+            let hardwareVoices = [];
 
-            function populateVoiceList() {
-                voices = window.speechSynthesis.getVoices();
-                voiceSelect.innerHTML = ''; 
-
-                if (voices.length === 0) {
-                    voiceSelect.innerHTML = '<option>No voices available</option>';
-                    return;
-                }
-
-                voices.forEach((voice, index) => {
-                    const option = document.createElement('option');
-                    option.textContent = `${voice.name} (${voice.lang})`;
-                    option.value = index;
-                    
-                    if (voice.name.includes('Google US English') || voice.name.includes('Zira')) {
-                         option.selected = true;
-                    }
-
-                    voiceSelect.appendChild(option);
-                });
-            }
-
-            populateVoiceList();
-            if (speechSynthesis.onvoiceschanged !== undefined) {
-                speechSynthesis.onvoiceschanged = populateVoiceList;
-            }
-
-            function breakTextIntoChunks(text) {
-                const regex = /[^.!?;\n]+[.!?;\n]+/g;
-                const chunks = text.match(regex);
-                if (!chunks) return [text.trim()].filter(Boolean);
-                return chunks.map(chunk => chunk.trim()).filter(chunk => chunk.length > 0);
-            }
-
-            function processAndPlayChunk(textChunk, selectedVoiceIndex) {
-                return new Promise((resolve) => {
-                    const utterance = new SpeechSynthesisUtterance(textChunk);
-                    
-                    if (voices.length > 0 && selectedVoiceIndex !== "") {
-                        utterance.voice = voices[selectedVoiceIndex];
-                    }
-                    
-                    utterance.rate = 1.0; 
-                    utterance.pitch = 1.0; 
-                    
-                    utterance.onend = () => resolve();
-                    utterance.onerror = (e) => {
-                        console.warn("Audio chunk error, skipping...", e);
-                        resolve(); 
-                    };
-                    
-                    window.speechSynthesis.speak(utterance);
-                });
-            }
-
-            async function executeTTSSequence() {
-                const rawText = textInput.value;
-                const selectedVoiceIndex = voiceSelect.value;
-
-                if (!rawText.trim()) {
-                    statusDisplay.innerText = "ERR: BUFFER EMPTY";
-                    statusDisplay.className = "text-red-500 font-bold uppercase tracking-wider";
-                    return;
-                }
-
-                window.speechSynthesis.cancel();
-                chunkListDisplay.innerHTML = '';
+            // Populate Audio Drivers
+            function populateVoiceMatrix() {
+                hardwareVoices = JaiVerse.Voice.synth.getVoices();
+                if (hardwareVoices.length === 0) return;
                 
-                const chunks = breakTextIntoChunks(rawText);
-                statusDisplay.innerText = `[${chunks.length} CHUNKS] RUNNING...`;
-                statusDisplay.className = "text-emerald-400 font-bold uppercase tracking-wider";
+                voiceSelection.innerHTML = '';
+                hardwareVoices.forEach((voice, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${voice.name} (${voice.lang})`;
+                    if (voice.default) option.selected = true;
+                    voiceSelection.appendChild(option);
+                });
+            }
 
-                chunks.forEach((chunk, index) => {
+            populateVoiceMatrix();
+            if (undefined !== window.speechSynthesis.onvoiceschanged) {
+                window.speechSynthesis.onvoiceschanged = populateVoiceMatrix;
+            }
+
+            // Text Parsing Pipeline
+            function breakTextIntoChunks(text) {
+                if (!text.trim()) return [];
+                // Regular Expression mapping complete structural boundaries
+                return text.match(/[^.!?]+[.!?]+/g) || [text];
+            }
+
+            // Audio Core Iteration Engine
+            function playCurrentChunk() {
+                if (!isRunning || currentChunkIndex >= globalChunks.length || currentChunkIndex < 0) {
+                    stopEngine();
+                    return;
+                }
+
+                intentionalSkip = false;
+                updateVisualInterface();
+
+                const textToSpeak = globalChunks[currentChunkIndex].trim();
+                const selectedVoice = hardwareVoices[voiceSelection.value] || null;
+
+                statusDisplay.innerText = `[CHUNK ${currentChunkIndex + 1}/${globalChunks.length}] PLAYING`;
+                statusDisplay.className = "text-red-400 font-mono font-bold uppercase tracking-wider";
+
+                JaiVerse.Voice.speakNative(textToSpeak, selectedVoice, () => {
+                    if (!intentionalSkip && isRunning) {
+                        currentChunkIndex++;
+                        if (currentChunkIndex < globalChunks.length) {
+                            playCurrentChunk();
+                        } else {
+                            stopEngine();
+                        }
+                    }
+                });
+            }
+
+            function updateVisualInterface() {
+                chunkListDisplay.innerHTML = '';
+                globalChunks.forEach((chunk, index) => {
                     const li = document.createElement('li');
                     li.id = `chunk-item-${index}`;
-                    li.innerText = `> CHUNK ${index + 1} PENDING`;
+                    
+                    if (index < currentChunkIndex) {
+                        li.innerText = `✓ CHUNK ${index + 1}: ${chunk.substring(0, 30)}... [CLEARED]`;
+                        li.className = "text-slate-700 line-through pl-2";
+                    } else if (index === currentChunkIndex) {
+                        li.innerText = `⚡ CHUNK ${index + 1}: ${chunk}`;
+                        li.className = "text-red-400 font-bold border-l-2 border-red-500 pl-2 bg-red-950/10 py-1 rounded-r shadow-sm";
+                    } else {
+                        li.innerText = `> CHUNK ${index + 1}: ${chunk.substring(0, 45)}... [PENDING]`;
+                        li.className = "text-slate-500 pl-2";
+                    }
                     chunkListDisplay.appendChild(li);
                 });
 
-                for (let i = 0; i < chunks.length; i++) {
-                    const currentLi = document.getElementById(`chunk-item-${i}`);
-                    
-                    currentLi.innerText = `> PLAYING CHUNK ${i + 1} / ${chunks.length}`;
-                    currentLi.className = "text-red-400 font-bold border-l-2 border-red-500 pl-2";
-
-                    await processAndPlayChunk(chunks[i], selectedVoiceIndex);
-
-                    currentLi.innerText = `> CHUNK ${i + 1} CLEARED`;
-                    currentLi.className = "text-slate-600 line-through pl-2";
-                }
-
-                statusDisplay.innerText = "SYSTEM IDLE";
-                statusDisplay.className = "text-slate-400 font-bold uppercase tracking-wider";
+                // Auto Scroll to current item
+                const activeItem = document.getElementById(`chunk-item-${currentChunkIndex}`);
+                if (activeItem) activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
 
-            playBtn.addEventListener('click', executeTTSSequence);
+            // Control Implementations
+            function startEngine() {
+                const rawText = rawTextInput.value;
+                globalChunks = breakTextIntoChunks(rawText);
+
+                if (globalChunks.length === 0) {
+                    statusDisplay.innerText = "ERROR: EMPTY MANIFEST";
+                    statusDisplay.className = "text-amber-500 font-mono font-bold";
+                    return;
+                }
+
+                isRunning = true;
+                currentChunkIndex = 0;
+                isPaused = false;
+                btnPauseResume.innerText = "⏸ Pause";
+                btnPauseResume.classList.remove('hidden');
+                
+                playCurrentChunk();
+            }
+
+            function stopEngine() {
+                isRunning = false;
+                isPaused = false;
+                globalChunks = [];
+                currentChunkIndex = 0;
+                JaiVerse.Voice.cancel();
+                
+                btnPauseResume.classList.add('hidden');
+                statusDisplay.innerText = "SYSTEM IDLE";
+                statusDisplay.className = "text-slate-400 font-mono font-bold uppercase tracking-wider";
+                chunkListDisplay.innerHTML = '<li class="italic text-slate-600">> System stands ready. Provide text to initialize parsing array...</li>';
+            }
+
+            function togglePauseResume() {
+                if (!isRunning) return;
+
+                if (!isPaused) {
+                    JaiVerse.Voice.synth.pause();
+                    isPaused = true;
+                    btnPauseResume.innerText = "▶️ Resume";
+                    statusDisplay.innerText = "ENGINE PAUSED";
+                    statusDisplay.className = "text-amber-400 font-mono font-bold";
+                } else {
+                    JaiVerse.Voice.synth.resume();
+                    isPaused = false;
+                    btnPauseResume.innerText = "⏸ Pause";
+                    statusDisplay.innerText = `[CHUNK ${currentChunkIndex + 1}/${globalChunks.length}] PLAYING`;
+                    statusDisplay.className = "text-red-400 font-mono font-bold";
+                }
+            }
+
+            function skipNext() {
+                if (isRunning && currentChunkIndex < globalChunks.length - 1) {
+                    intentionalSkip = true;
+                    JaiVerse.Voice.cancel();
+                    currentChunkIndex++;
+                    if (isPaused) {
+                        isPaused = false;
+                        btnPauseResume.innerText = "⏸ Pause";
+                    }
+                    setTimeout(() => playCurrentChunk(), 50);
+                }
+            }
+
+            function skipPrev() {
+                if (isRunning && currentChunkIndex > 0) {
+                    intentionalSkip = true;
+                    JaiVerse.Voice.cancel();
+                    currentChunkIndex--;
+                    if (isPaused) {
+                        isPaused = false;
+                        btnPauseResume.innerText = "⏸ Pause";
+                    }
+                    setTimeout(() => playCurrentChunk(), 50);
+                }
+            }
+
+            // Wire Interface Listeners
+            btnStart.addEventListener('click', startEngine);
+            btnStop.addEventListener('click', stopEngine);
+            btnPauseResume.addEventListener('click', togglePauseResume);
+            btnNext.addEventListener('click', skipNext);
+            btnPrev.addEventListener('click', skipPrev);
         });
     </script>
 </body>
