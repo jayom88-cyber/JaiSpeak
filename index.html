@@ -1,285 +1,463 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Jairo — TTS Chunking Engine (Ferrari Aesthetic)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jai Speak | Proprietary TTS Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        body {
+            /* We start with a dark background, JS will handle the theme switching with the gradient overlay */
+            background-color: #0b0f19;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0; padding: 0; overflow-x: hidden;
+            transition: background-image 1s ease-in-out;
+            min-height: 100vh;
+        }
 
-<style>
-  :root{
-    --bg-dark:#0b0f19;
-    --panel:#0f172a;
-    --muted:#94a3b8;
-    --accent-teal:#2dd4bf;
-    --accent-red:#ef4444;
-  }
+        /* Glassmorphism Panel Fusion */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px dashed rgba(45, 212, 191, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
 
-  html,body{height:100%;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background-color:var(--bg-dark);color:#f1f5f9;}
+        /* Premium Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(45, 212, 191, 0.5); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(45, 212, 191, 0.8); }
 
-/* Background / Ferrari aesthetic */
-  body {
-    background-image:
-      linear-gradient(rgba(11,15,25,0.45), rgba(0,0,0,0.85)),
-      url('https://meshekatlan.com/wp-content/uploads/2026/05/Gemini_Generated_Image_-4.png');
-    background-size:cover;
-    background-position:center;
-    background-attachment:fixed;
-    background-repeat:no-repeat;
-    min-height:100vh;
-    overflow-x:hidden;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-  }
-
-  main{max-width:420px;margin:36px auto;padding:20px;}
-
-  header{display:flex;flex-direction:column;align-items:center;margin-bottom:18px}
-  .logo {
-    width:96px;height:96px;border-radius:18px;background:rgba(15,23,42,0.6);backdrop-filter:blur(8px);
-    border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;margin-bottom:12px;
-    box-shadow:0 18px 40px -12px rgba(0,0,0,0.6);
-    transform:rotate(3deg);transition:transform .28s ease;
-  }
-  .logo:hover{transform:rotate(0)}
-  .logo span{font-weight:900;font-size:28px;background:linear-gradient(180deg,#fff,#cbd5e1);-webkit-background-clip:text;background-clip:text;color:transparent}
-
-  h1{font-size:28px;margin:0;font-weight:900;letter-spacing:0.02em;text-transform:uppercase}
-  h2{font-size:12px;margin:6px 0 0;color:#f87171;font-weight:800;letter-spacing:0.18em;text-transform:uppercase}
-
-  /* Glass panel */
-  .glass-panel{
-    background:rgba(15,23,42,0.62);
-    -webkit-backdrop-filter:blur(14px);
-    backdrop-filter:blur(14px);
-    border:1px solid rgba(255,255,255,0.06);
-    box-shadow:0 30px 60px -20px rgba(0,0,0,0.6);
-    padding:22px;border-radius:20px;
-  }
-
-  label{display:block;color:#94a3b8;font-size:11px;margin-bottom:8px;font-weight:700;letter-spacing:0.06em}
-  select,textarea,input{font-family:inherit}
-
-  select{
-    width:100%;padding:12px;border-radius:12px;background:rgba(2,6,23,0.6);border:1px solid rgba(148,163,184,0.06);
-    color:#e6eef6;font-size:13px;appearance:none;
-  }
-
-  textarea{
-    width:100%;min-height:140px;padding:14px;border-radius:14px;background:rgba(0,0,0,0.45);border:1px solid rgba(148,163,184,0.06);
-    color:#e6eef6;font-size:13px;resize:none;box-shadow:inset 0 2px 8px rgba(0,0,0,0.6);
-  }
-
-  .ignition-btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;
-    background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%);border:1px solid #f87171;color:#fff;padding:14px;border-radius:14px;font-weight:900;
-    box-shadow:0 8px 30px rgba(220,38,38,0.28);cursor:pointer;transition:transform .18s ease,box-shadow .18s ease;
-  }
-  .ignition-btn:disabled{opacity:0.5;cursor:not-allowed}
-  .ignition-btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 18px 40px rgba(220,38,38,0.42)}
-
-  .telemetry-console{margin-top:14px;background:rgba(0,0,0,0.42);border-radius:12px;padding:12px;border:1px inset rgba(255,255,255,0.03)}
-  .status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px solid rgba(148,163,184,0.06);padding-bottom:8px}
-  .status-row .label{font-family:monospace;color:#94a3b8;font-size:11px;letter-spacing:0.08em}
-  .status-row .value{font-weight:800;color:#f87171;font-family:inherit}
-
-  ul#chunk-list{list-style:none;padding:0;margin:0;max-height:160px;overflow:auto;color:#94a3b8;font-family:monospace;font-size:12px}
-  ul#chunk-list li{padding:8px;border-radius:8px}
-
-  .portal-btn{display:flex;align-items:center;justify-content:center;padding:12px;border-radius:12px;background:rgba(30,41,59,0.6);border:1px solid rgba(255,255,255,0.04);color:#e6eef6;text-decoration:none;margin-top:12px}
-  .portal-btn:hover{transform:translateY(-3px);background:rgba(45,212,191,0.12);border-color:rgba(45,212,191,0.28)}
-
-  /* small scrollbar */
-  ::-webkit-scrollbar{width:8px;height:8px}
-  ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:8px}
-  ::-webkit-scrollbar-track{background:transparent}
-</style>
+        /* CashApp Hover Glow */
+        .cashapp-btn:hover {
+            box-shadow: 0 0 15px rgba(0, 214, 50, 0.5);
+            border-color: #00D632;
+        }
+    </style>
 </head>
-<body>
-<main>
-  <header>
-    <div class="logo"><span>J&V</span></div>
-    <h1>Jairo Bonilla</h1>
-    <h2>The Digital Houdini</h2>
-  </header>
+<body class="min-h-screen flex flex-col items-center py-8 px-4 relative">
 
-  <section class="glass-panel">
-    <div style="position:absolute;left:50%;transform:translateX(-50%);top:-18px;background:#ef4444;color:#fff;padding:6px 12px;border-radius:999px;font-weight:900;font-size:11px;letter-spacing:0.12em;border:1px solid rgba(255,255,255,0.06);box-shadow:0 8px 30px rgba(239,68,68,0.18)">Proprietary TTS Engine</div>
+    <!-- COFFEE / CASHAPP BADGE (Top Right) -->
+    <a href="https://cash.app/$JayBonilla9" target="_blank" class="absolute top-4 right-4 md:top-6 md:right-6 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md border border-slate-700 px-3 py-1.5 md:px-4 md:py-2 rounded-full transition-all cashapp-btn z-50">
+        <span class="text-green-500 font-bold text-base md:text-lg leading-none">$</span>
+        <span class="text-[10px] md:text-xs font-bold text-slate-300 uppercase tracking-widest whitespace-nowrap">Buy a Coffee</span>
+    </a>
 
-    <h3 style="text-align:center;margin:8px 0 6px;font-size:20px">Vocal Architecture</h3>
-    <p style="text-align:center;color:#94a3b8;font-size:12px;margin:0 0 14px">Bypass server limits. Initiate chunking sequence.</p>
+    <main class="w-full max-w-md mt-6">
 
-    <div style="margin-bottom:12px">
-      <label for="voice-select">Audio Output Module</label>
-      <select id="voice-select"><option>Loading neural voices...</option></select>
-    </div>
+        <header class="flex flex-col items-center mb-8 text-center mt-4">
+            <div class="w-24 h-24 rounded-3xl bg-slate-800/80 backdrop-blur-md border border-teal-400 overflow-hidden mb-3 shadow-[0_0_20px_rgba(45,212,191,0.3)] flex items-center justify-center">
+                <span class="text-3xl font-bold tracking-widest text-teal-300">J&V</span>
+            </div>
+            <h1 class="text-2xl font-extrabold tracking-widest mb-1 text-white uppercase drop-shadow-lg">Jairo Bonilla</h1>
+            <h2 class="text-teal-400 text-sm font-bold mb-3 uppercase tracking-widest drop-shadow-md">The Digital Houdini</h2>
+            
+            <div class="bg-slate-900/90 border border-teal-500 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest shadow-[0_0_15px_rgba(45,212,191,0.4)]">
+                Jai Speak Engine
+            </div>
+        </header>
 
-    <textarea id="tts-input" placeholder="Paste your raw script here..."></textarea>
+        <section class="w-full p-5 glass-panel rounded-2xl relative mb-6">
+            
+            <!-- WORDPRESS API BRIDGE -->
+            <div class="mb-4 p-4 bg-slate-900/60 rounded-xl border border-teal-500/30">
+                <h4 class="text-teal-400 text-[10px] font-bold uppercase tracking-widest mb-3 flex items-center">
+                    <span>📡 meshekatlan.com Databank</span>
+                </h4>
+                <div class="flex gap-2">
+                    <input type="text" id="wp-post-id" value="2459" class="bg-slate-800 border border-slate-600 rounded-lg p-2.5 text-sm text-slate-200 w-20 focus:outline-none focus:border-teal-500 transition-colors" placeholder="ID">
+                    <button id="wp-fetch-btn" class="flex-1 bg-slate-700 hover:bg-teal-600 border border-slate-600 hover:border-teal-500 text-white font-bold py-2.5 px-3 rounded-lg transition-all text-xs shadow-lg">
+                        Fetch Bilingual Post
+                    </button>
+                </div>
+                <p id="wp-status" class="text-xs text-slate-400 mt-2 hidden"></p>
+            </div>
 
-    <button id="tts-play-btn" class="ignition-btn" type="button" aria-live="polite">
-      <span>Initiate Chunking</span>
-      <svg class="w-5 h-5" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="opacity:0.95">
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-      </svg>
-    </button>
+            <!-- JAI-VERSE LEXICON INJECTION -->
+            <div class="mb-5 p-4 bg-slate-900/60 rounded-xl border border-indigo-500/30">
+                <h4 class="text-indigo-400 text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center justify-between">
+                    <span>📖 The Jai-Verse Lexicon</span>
+                    <span class="text-[9px] text-slate-500">Oxford Standard</span>
+                </h4>
+                <div class="flex gap-2">
+                    <select id="lexicon-select" class="flex-1 bg-slate-800 border border-slate-600 text-slate-300 text-xs rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-2 outline-none">
+                        <option value="">Select terminology to inject...</option>
+                        <option value="AeroScribe: To compose code, music, or narrative in a fluid, intuitive manner, as though guided by breath rather than deliberate mechanical action.">AeroScribe</option>
+                        <option value="Chronoforge: To shape historical material into a structured narrative, timeline, or interactive system.">Chronoforge</option>
+                        <option value="Mythocode: A programming approach in which ancestral memory, cultural symbolism, and sacred geometry inform the architecture of digital systems.">Mythocode</option>
+                        <option value="OmniStack: A development environment that extends beyond conventional front-end and back-end layers to encompass digital, auditory, and physical dimensions of the developer's practice.">OmniStack</option>
+                        <option value="Soulstacking: The practice of embedding emotional intelligence and human empathy into the structural layers of digital systems.">Soulstacking</option>
+                    </select>
+                    <button id="lexicon-inject-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-3 rounded-lg transition-all text-xs border border-indigo-400 shadow-lg">
+                        Inject
+                    </button>
+                </div>
+            </div>
 
-    <div class="telemetry-console">
-      <div class="status-row">
-        <div class="label">System Status</div>
-        <div id="tts-status" class="value" style="color:#ef4444">Standby</div>
-      </div>
-      <ul id="chunk-list"><li style="opacity:0.6;font-style:italic">Awaiting data stream...</li></ul>
-    </div>
-  </section>
+            <!-- Language Selector -->
+            <div class="mb-4">
+                <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Target Language</label>
+                <select id="lang-select" class="w-full bg-slate-800 border border-slate-600 text-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                    <option value="pt">Português</option>
+                    <option value="it">Italiano</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                    <option value="la">Latin (Fallback to IT)</option>
+                </select>
+            </div>
 
-  <section style="margin-top:18px;display:flex;flex-direction:column;gap:10px">
-    <a class="portal-btn" href="#" role="button">🩹 Return to Curi Band-Aid</a>
-    <a class="portal-btn" href="#" role="button">🗝️ Access The Vault</a>
-  </section>
-</main>
+            <!-- Voice Select -->
+            <div class="mb-4">
+                <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Acoustic Profile</label>
+                <select id="voice-select" class="w-full bg-slate-800 border border-slate-600 text-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all"></select>
+            </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const textInput = document.getElementById('tts-input');
-    const playBtn = document.getElementById('tts-play-btn');
-    const statusDisplay = document.getElementById('tts-status');
-    const chunkListDisplay = document.getElementById('chunk-list');
-    const voiceSelect = document.getElementById('voice-select');
+            <!-- Text Input -->
+            <textarea id="tts-input" class="w-full bg-slate-900/80 border border-slate-600 rounded-lg p-4 text-sm h-32 mb-4 focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder-slate-500 resize-none leading-relaxed" placeholder="Paste your raw script here, fetch from the databank, or inject Lexicon terms..."></textarea>
 
-    let voices = [];
-    let defaultVoiceIndex = null;
+            <!-- Execution Controls -->
+            <div class="grid grid-cols-2 gap-3 mb-5">
+                <button id="play-btn" class="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold py-3 px-2 rounded-lg text-sm transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] active:scale-95 flex items-center justify-center gap-2">
+                    <span id="play-icon">▶</span> <span id="play-text" class="uppercase tracking-wide">Initialize</span>
+                </button>
+                <button id="stop-btn" class="bg-slate-800 hover:bg-red-600 border border-slate-700 hover:border-red-500 text-white font-bold py-3 px-2 rounded-lg text-sm transition-colors shadow-lg active:scale-95 flex items-center justify-center gap-2">
+                    <span>■</span> <span class="uppercase tracking-wide">Terminate</span>
+                </button>
+            </div>
 
-    // Populate voices safely and pick a single default
-    function populateVoiceList() {
-        voices = window.speechSynthesis.getVoices() || [];
-        voiceSelect.innerHTML = '';
-        defaultVoiceIndex = null;
+            <!-- Parametric Sliders -->
+            <div class="space-y-4 text-sm mb-6 bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+                <div>
+                    <label class="flex justify-between text-[10px] uppercase font-bold tracking-wider mb-1"><span class="text-slate-400">Speed</span><span id="rate-val" class="font-mono text-teal-300">0.96</span></label>
+                    <input type="range" id="rate" min="0.5" max="2" step="0.01" value="0.96" class="w-full accent-teal-400 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                </div>
+                <div>
+                    <label class="flex justify-between text-[10px] uppercase font-bold tracking-wider mb-1"><span class="text-slate-400">Pitch</span><span id="pitch-val" class="font-mono text-teal-300">1.00</span></label>
+                    <input type="range" id="pitch" min="0" max="2" step="0.01" value="1.0" class="w-full accent-teal-400 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                </div>
+                <div>
+                    <label class="flex justify-between text-[10px] uppercase font-bold tracking-wider mb-1"><span class="text-slate-400">Volume</span><span id="volume-val" class="font-mono text-teal-300">1.00</span></label>
+                    <input type="range" id="volume" min="0" max="1" step="0.01" value="1.0" class="w-full accent-teal-400 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                </div>
+            </div>
 
-        if (!voices.length) {
-            const opt = document.createElement('option');
-            opt.textContent = 'No voices available';
-            opt.value = '';
-            voiceSelect.appendChild(opt);
-            return;
-        }
+            <!-- Output Meter & Status -->
+            <div class="p-4 bg-slate-900 rounded-xl border border-slate-700 shadow-inner">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="text-[10px] uppercase tracking-widest font-mono">
+                        <span class="text-slate-500">Status: </span>
+                        <span id="tts-status" class="text-teal-400 font-bold">Idle</span>
+                    </div>
+                    <span id="progress-text" class="text-[10px] font-mono text-slate-400">0%</span>
+                </div>
+                
+                <!-- Progress Meter -->
+                <div class="w-full bg-slate-800 rounded-full h-1.5 mb-3 overflow-hidden">
+                    <div id="progress-bar" class="bg-teal-400 h-1.5 rounded-full transition-all duration-300 ease-out" style="width: 0%"></div>
+                </div>
 
-        voices.forEach((voice, index) => {
-            const option = document.createElement('option');
-            option.textContent = `${voice.name} (${voice.lang})`;
-            option.value = index;
-            voiceSelect.appendChild(option);
+                <ul id="chunk-list" class="text-[11px] font-mono space-y-1.5 max-h-32 overflow-y-auto pr-2 text-slate-400">
+                    <li class="opacity-50 text-center py-2">Awaiting architecture load...</li>
+                </ul>
+            </div>
+        </section>
 
-            // pick the first desirable voice as default (only one)
-            if (defaultVoiceIndex === null) {
-                const name = (voice.name || '').toLowerCase();
-                if (name.includes('google') || name.includes('neural') || name.includes('zira') || name.includes('en-us')) {
-                    defaultVoiceIndex = index;
+        <!-- Background Themes at Bottom -->
+        <div class="w-full pb-10">
+            <p class="text-center text-[10px] text-slate-500 uppercase tracking-widest mb-2 font-bold">Environment Protocols</p>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="changeBackground(0)" class="h-10 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 rounded-lg text-[10px] font-medium transition-colors text-slate-300">Cosmic</button>
+                <button onclick="changeBackground(1)" class="h-10 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 rounded-lg text-[10px] font-medium transition-colors text-slate-300">Archive</button>
+                <button onclick="changeBackground(2)" class="h-10 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 rounded-lg text-[10px] font-medium transition-colors text-slate-300">Architecture</button>
+                <button onclick="changeBackground(3)" class="h-10 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 rounded-lg text-[10px] font-medium transition-colors text-slate-300">Ethereal</button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Core DOM Elements
+            const textInput = document.getElementById('tts-input');
+            const playBtn = document.getElementById('play-btn');
+            const playIcon = document.getElementById('play-icon');
+            const playText = document.getElementById('play-text');
+            const stopBtn = document.getElementById('stop-btn');
+            const statusDisplay = document.getElementById('tts-status');
+            const chunkListDisplay = document.getElementById('chunk-list');
+            const voiceSelect = document.getElementById('voice-select');
+            const langSelect = document.getElementById('lang-select');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+
+            // API & Lexicon DOM Elements
+            const wpFetchBtn = document.getElementById('wp-fetch-btn');
+            const wpPostIdInput = document.getElementById('wp-post-id');
+            const wpStatus = document.getElementById('wp-status');
+            const lexiconSelect = document.getElementById('lexicon-select');
+            const lexiconInjectBtn = document.getElementById('lexicon-inject-btn');
+
+            let allSystemVoices = [];
+            let ttsState = 'idle'; 
+            let currentChunks = [];
+            let currentUtterance = null;
+
+            // --- THEME ENGINE WITH GRADIENT OVERLAY ---
+            const backgrounds = [
+                "https://meshekatlan.com/wp-content/uploads/2026/05/Gemini_Generated_Image_-4.png",
+                "https://meshekatlan.com/wp-content/uploads/2026/02/IMG_3886.jpg",
+                "https://thesmileappvalt.wordpress.com/wp-content/uploads/2026/04/image_1771203972632.jpeg",
+                "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop"
+            ];
+
+            window.changeBackground = function(index) {
+                // Fuses your dark contrast overlay with the dynamic images
+                document.body.style.backgroundImage = `linear-gradient(rgba(11, 15, 25, 0.7), rgba(0, 0, 0, 0.9)), url('${backgrounds[index]}')`;
+            };
+
+            // --- LEXICON INJECTION LOGIC ---
+            lexiconInjectBtn.addEventListener('click', () => {
+                const selectedTerm = lexiconSelect.value;
+                if(selectedTerm) {
+                    const currentText = textInput.value;
+                    textInput.value = currentText ? currentText + "\n\n" + selectedTerm : selectedTerm;
+                    
+                    lexiconInjectBtn.classList.replace('bg-indigo-600', 'bg-green-500');
+                    lexiconInjectBtn.innerText = "Injected!";
+                    setTimeout(() => {
+                        lexiconInjectBtn.classList.replace('bg-green-500', 'bg-indigo-600');
+                        lexiconInjectBtn.innerText = "Inject";
+                    }, 1500);
+                }
+            });
+
+            // --- WORDPRESS API BRIDGE ---
+            function stripHTML(html) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                return tempDiv.textContent || tempDiv.innerText || "";
+            }
+
+            wpFetchBtn.addEventListener('click', async () => {
+                const postId = wpPostIdInput.value.trim();
+                if(!postId) return;
+
+                wpStatus.style.display = 'block';
+                wpStatus.innerText = "Connecting to meshekatlan.com...";
+                wpStatus.className = "text-[10px] text-teal-400 mt-2 block animate-pulse uppercase tracking-wide";
+
+                try {
+                    const response = await fetch(`https://meshekatlan.com/wp-json/wp/v2/posts/${postId}`);
+                    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+
+                    const data = await response.json();
+                    textInput.value = stripHTML(data.content.rendered);
+
+                    wpStatus.innerText = `✅ Payload Secured: "${data.title.rendered}"`;
+                    wpStatus.className = "text-[10px] text-emerald-400 mt-2 block font-bold tracking-wide";
+                } catch (error) {
+                    console.error("WP Fetch Error:", error);
+                    wpStatus.innerText = "❌ Connection Failed. Check Post ID.";
+                    wpStatus.className = "text-[10px] text-red-400 mt-2 block font-bold tracking-wide";
+                }
+            });
+
+            // --- DYNAMIC VOICE FILTERING ---
+            function updateVoiceList() {
+                allSystemVoices = window.speechSynthesis.getVoices();
+                if (allSystemVoices.length === 0) return;
+
+                const selectedLangPrefix = langSelect.value; 
+                let searchPrefix = selectedLangPrefix === 'la' ? 'it' : selectedLangPrefix;
+
+                const filteredVoices = allSystemVoices.filter(v => v.lang.startsWith(searchPrefix));
+                voiceSelect.innerHTML = '';
+                
+                if (filteredVoices.length === 0) {
+                    voiceSelect.innerHTML = '<option value="">No native voices found</option>';
+                    return;
+                }
+
+                filteredVoices.forEach(voice => {
+                    const opt = document.createElement('option');
+                    opt.value = allSystemVoices.indexOf(voice); 
+                    
+                    let cleanName = voice.name.replace(/Microsoft |Google /g, '');
+                    opt.textContent = `${cleanName} (${voice.lang})`;
+                    
+                    if (voice.name.toLowerCase().includes('google') || voice.default) {
+                        opt.selected = true;
+                    }
+                    voiceSelect.appendChild(opt);
+                });
+            }
+
+            langSelect.addEventListener('change', updateVoiceList);
+            updateVoiceList();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = updateVoiceList;
+            }
+
+            // --- TTS CHUNKING CORE ---
+            function breakTextIntoChunks(text, max = 220) {
+                const sentences = text.match(/[^.!?;\n]+[.!?;\n]+/g) || [text];
+                let chunks = [], current = "";
+                for (let s of sentences) {
+                    if ((current + s).length > max) {
+                        if (current) chunks.push(current.trim());
+                        current = s;
+                    } else current += " " + s;
+                }
+                if (current) chunks.push(current.trim());
+                return chunks.filter(c => c.length > 2);
+            }
+
+            function createUtterance(text) {
+                const u = new SpeechSynthesisUtterance(text);
+                const globalVoiceIndex = voiceSelect.value;
+                
+                if (allSystemVoices.length && globalVoiceIndex !== "") {
+                    u.voice = allSystemVoices[globalVoiceIndex];
+                    u.lang = u.voice.lang; 
+                } else {
+                    u.lang = langSelect.value === 'la' ? 'it-IT' : langSelect.value; 
+                }
+                
+                u.rate = parseFloat(document.getElementById('rate').value);
+                u.pitch = parseFloat(document.getElementById('pitch').value);
+                u.volume = parseFloat(document.getElementById('volume').value);
+                return u;
+            }
+
+            function updateUIState(state) {
+                ttsState = state;
+                if (state === 'playing') {
+                    playIcon.textContent = "⏸";
+                    playText.textContent = "Pause";
+                    playBtn.classList.replace('from-teal-600', 'from-amber-600');
+                    playBtn.classList.replace('to-emerald-600', 'to-yellow-500');
+                    statusDisplay.textContent = "Synthesizing...";
+                    statusDisplay.className = "text-teal-400 font-bold animate-pulse";
+                } else if (state === 'paused') {
+                    playIcon.textContent = "▶";
+                    playText.textContent = "Resume";
+                    playBtn.classList.replace('from-amber-600', 'from-teal-600');
+                    playBtn.classList.replace('to-yellow-500', 'to-emerald-600');
+                    statusDisplay.textContent = "Paused";
+                    statusDisplay.className = "text-amber-400 font-bold";
+                } else { 
+                    playIcon.textContent = "▶";
+                    playText.textContent = "Initialize";
+                    playBtn.classList.replace('from-amber-600', 'from-teal-600');
+                    playBtn.classList.replace('to-yellow-500', 'to-emerald-600');
+                    statusDisplay.textContent = "Idle";
+                    statusDisplay.className = "text-slate-400 font-bold";
+                    progressBar.style.width = "0%";
+                    progressText.textContent = "0%";
                 }
             }
-        });
 
-        // fallback to first voice if none matched
-        if (defaultVoiceIndex === null && voices.length > 0) defaultVoiceIndex = 0;
-        if (defaultVoiceIndex !== null) voiceSelect.value = defaultVoiceIndex;
-    }
+            async function processChunks() {
+                for (let i = 0; i < currentChunks.length; i++) {
+                    if (ttsState === 'idle') break;
 
-    populateVoiceList();
-    if (typeof speechSynthesis !== 'undefined' && 'onvoiceschanged' in speechSynthesis) {
-        speechSynthesis.onvoiceschanged = populateVoiceList;
-    }
+                    while (ttsState === 'paused') {
+                        await new Promise(r => setTimeout(r, 100));
+                    }
 
-    // Robust chunking: includes trailing text without punctuation
-    function breakTextIntoChunks(text) {
-        if (!text) return [];
-        const regex = /[^.!?;\n]+[.!?;\n]*/g;
-        const chunks = text.match(regex) || [];
-        return chunks.map(c => c.trim()).filter(Boolean);
-    }
+                    const li = document.getElementById(`chunk-${i}`);
+                    li.innerHTML = `<span class="text-teal-400">▶</span> PLAYING: "${currentChunks[i].substring(0, 30)}..."`;
+                    li.classList.add('bg-slate-800', 'p-1', 'rounded', 'text-white');
+                    li.scrollIntoView({ behavior: "smooth", block: "nearest" });
 
-    // Play a single chunk with optional voice index
-    function processAndPlayChunk(textChunk, selectedVoiceIndex) {
-        return new Promise((resolve) => {
-            try {
-                const utterance = new SpeechSynthesisUtterance(textChunk);
-                if (selectedVoiceIndex !== null && voices[selectedVoiceIndex]) {
-                    utterance.voice = voices[selectedVoiceIndex];
+                    currentUtterance = createUtterance(currentChunks[i]);
+                    
+                    await new Promise(resolve => {
+                        currentUtterance.onend = () => resolve();
+                        currentUtterance.onerror = (e) => {
+                            console.warn("Audio chunk error", e);
+                            resolve();
+                        };
+                        speechSynthesis.speak(currentUtterance);
+                    });
+
+                    if (ttsState !== 'idle') {
+                        li.innerHTML = `<span class="text-slate-500">✓ Block ${i+1} completed</span>`;
+                        li.classList.remove('bg-slate-800', 'text-white');
+                        
+                        const percent = Math.round(((i + 1) / currentChunks.length) * 100);
+                        progressBar.style.width = `${percent}%`;
+                        progressText.textContent = `${percent}%`;
+                    }
                 }
-                utterance.rate = 1.0;
-                utterance.pitch = 1.0;
-                utterance.onend = () => resolve();
-                utterance.onerror = () => resolve();
-                window.speechSynthesis.speak(utterance);
-            } catch (err) {
-                // If anything goes wrong, resolve to continue sequence
-                console.warn('TTS chunk error', err);
-                resolve();
+
+                if (ttsState !== 'idle') {
+                    statusDisplay.textContent = "Sequence Complete";
+                    statusDisplay.className = "text-teal-400 font-bold";
+                    updateUIState('idle');
+                }
             }
+
+            playBtn.addEventListener('click', () => {
+                if (ttsState === 'playing') {
+                    speechSynthesis.pause();
+                    updateUIState('paused');
+                    return;
+                }
+                if (ttsState === 'paused') {
+                    speechSynthesis.resume();
+                    updateUIState('playing');
+                    return;
+                }
+
+                const text = textInput.value.trim();
+                if (!text) return;
+
+                speechSynthesis.cancel();
+                chunkListDisplay.innerHTML = "";
+                currentChunks = breakTextIntoChunks(text);
+                if(currentChunks.length === 0) return;
+
+                currentChunks.forEach((_, i) => {
+                    const li = document.createElement('li');
+                    li.id = `chunk-${i}`;
+                    li.className = "text-slate-400 transition-colors duration-200";
+                    li.innerHTML = `⧖ Queued [Block ${i+1}]`;
+                    chunkListDisplay.appendChild(li);
+                });
+
+                updateUIState('playing');
+                processChunks();
+            });
+
+            stopBtn.addEventListener('click', () => {
+                speechSynthesis.cancel();
+                updateUIState('idle');
+                chunkListDisplay.innerHTML = "<li class='text-red-400 opacity-80'>■ Process Terminated</li>";
+            });
+
+            ['rate','pitch','volume'].forEach(id => {
+                const slider = document.getElementById(id);
+                const val = document.getElementById(id + '-val');
+                slider.addEventListener('input', () => {
+                    val.textContent = parseFloat(slider.value).toFixed(2);
+                });
+            });
+
+            // Initialize first background theme
+            changeBackground(0);
         });
-    }
-
-    // Main sequence runner
-    async function executeTTSSequence() {
-        const rawText = textInput.value || '';
-        const selectedVoiceIndex = (voiceSelect.value === '' || voiceSelect.value === null) ? null : parseInt(voiceSelect.value, 10);
-
-        if (!rawText.trim()) {
-            statusDisplay.textContent = 'ERR: BUFFER EMPTY';
-            statusDisplay.style.color = '#ef4444';
-            statusDisplay.style.fontWeight = '800';
-            return;
-        }
-
-        // Cancel any ongoing speech and prevent overlap
-        if (window.speechSynthesis && window.speechSynthesis.speaking) {
-            window.speechSynthesis.cancel();
-        }
-
-        playBtn.disabled = true;
-        chunkListDisplay.innerHTML = '';
-
-        const chunks = breakTextIntoChunks(rawText);
-        statusDisplay.textContent = `[${chunks.length} CHUNKS] RUNNING...`;
-        statusDisplay.style.color = '#10b981';
-        statusDisplay.style.fontWeight = '800';
-
-        // populate list
-        chunks.forEach((chunk, index) => {
-            const li = document.createElement('li');
-            li.id = `chunk-item-${index}`;
-            li.textContent = `> CHUNK ${index + 1} PENDING`;
-            chunkListDisplay.appendChild(li);
-        });
-
-        // sequential playback
-        for (let i = 0; i < chunks.length; i++) {
-            const currentLi = document.getElementById(`chunk-item-${i}`);
-            if (currentLi) {
-                currentLi.textContent = `> PLAYING CHUNK ${i + 1} / ${chunks.length}`;
-                currentLi.style.color = '#ef4444';
-                currentLi.style.fontWeight = '800';
-                currentLi.style.borderLeft = '3px solid #ef4444';
-                currentLi.style.paddingLeft = '8px';
-            }
-
-            await processAndPlayChunk(chunks[i], selectedVoiceIndex);
-
-            if (currentLi) {
-                currentLi.textContent = `> CHUNK ${i + 1} CLEARED`;
-                currentLi.style.color = '#94a3b8';
-                currentLi.style.textDecoration = 'line-through';
-                currentLi.style.borderLeft = 'none';
-                currentLi.style.paddingLeft = '8px';
-            }
-        }
-
-        statusDisplay.textContent = 'SYSTEM IDLE';
-        statusDisplay.style.color = '#94a3b8';
-        statusDisplay.style.fontWeight = '700';
-        playBtn.disabled = false;
-    }
-
-    playBtn.addEventListener('click', executeTTSSequence);
-});
-</script>
+    </script>
 </body>
 </html>
