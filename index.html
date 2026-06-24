@@ -8,7 +8,7 @@
     
     <style>
         body {
-            /* We start with a dark background, JS will handle the theme switching with the gradient overlay */
+            /* JS will handle the theme switching with the gradient overlay */
             background-color: #0b0f19;
             background-size: cover;
             background-position: center;
@@ -45,19 +45,31 @@
 </head>
 <body class="min-h-screen flex flex-col items-center py-8 px-4 relative">
 
+    <!-- VIBING SOURCE-CODE PORTAL (Top Left) -->
+    <a href="https://meshekatlan.wordpress.com" target="_blank" id="vibing-portal-btn" class="absolute top-4 left-4 md:top-6 md:left-6 z-50 flex flex-col items-center gap-2 group cursor-pointer decoration-transparent">
+        <!-- Image Aperture -->
+        <div class="w-24 h-16 md:w-32 md:h-20 rounded-xl overflow-hidden border-2 border-teal-500/50 shadow-[0_0_15px_rgba(45,212,191,0.6)] group-hover:shadow-[0_0_25px_rgba(45,212,191,0.9)] group-hover:border-teal-400 transition-all duration-300 group-hover:-translate-y-1 bg-slate-900">
+            <img id="vibing-img" src="https://meshekatlan.com/wp-content/uploads/2026/06/Gemini_Bookcover-24-06-2026-14-35-25.png" alt="Vibing Source-Code" class="w-full h-full object-cover transition-all duration-500 ease-in-out group-hover:scale-110">
+        </div>
+        <!-- Text Bubble -->
+        <div class="bg-slate-900/80 backdrop-blur-md border border-slate-700 px-3 py-1.5 rounded-full shadow-lg group-hover:border-teal-500/50 transition-colors">
+            <span class="text-[9px] md:text-[10px] font-bold text-teal-300 uppercase tracking-widest leading-none whitespace-nowrap">Vibing Source-Code</span>
+        </div>
+    </a>
+
     <!-- COFFEE / CASHAPP BADGE (Top Right) -->
-    <a href="https://cash.app/$JayBonilla9" target="_blank" class="absolute top-4 right-4 md:top-6 md:right-6 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md border border-slate-700 px-3 py-1.5 md:px-4 md:py-2 rounded-full transition-all cashapp-btn z-50">
+    <a href="https://cash.app/$JayBonilla9" target="_blank" class="absolute top-4 right-4 md:top-6 md:right-6 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md border border-slate-700 px-3 py-1.5 md:px-4 md:py-2 rounded-full transition-all cashapp-btn z-50 shadow-lg decoration-transparent">
         <span class="text-green-500 font-bold text-base md:text-lg leading-none">$</span>
         <span class="text-[10px] md:text-xs font-bold text-slate-300 uppercase tracking-widest whitespace-nowrap">Buy a Coffee</span>
     </a>
 
-    <main class="w-full max-w-md mt-6">
+    <main class="w-full max-w-md mt-10 md:mt-6">
 
         <header class="flex flex-col items-center mb-8 text-center mt-4">
             <div class="w-24 h-24 rounded-3xl bg-slate-800/80 backdrop-blur-md border border-teal-400 overflow-hidden mb-3 shadow-[0_0_20px_rgba(45,212,191,0.3)] flex items-center justify-center">
                 <span class="text-3xl font-bold tracking-widest text-teal-300">J&V</span>
             </div>
-            <h1 class="text-2xl font-extrabold tracking-widest mb-1 text-white uppercase drop-shadow-lg">Jairo Bonilla</h1>
+            <h1 class="text-2xl font-extrabold tracking-widest mb-1 text-white uppercase drop-shadow-lg">JAI-Speak TTS-Engine</h1>
             <h2 class="text-teal-400 text-sm font-bold mb-3 uppercase tracking-widest drop-shadow-md">The Digital Houdini</h2>
             
             <div class="bg-slate-900/90 border border-teal-500 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest shadow-[0_0_15px_rgba(45,212,191,0.4)]">
@@ -208,10 +220,40 @@
             const lexiconSelect = document.getElementById('lexicon-select');
             const lexiconInjectBtn = document.getElementById('lexicon-inject-btn');
 
+            // --- VIBING PORTAL AUTOMATED BILLBOARD ---
+            const vibingImg = document.getElementById('vibing-img');
+            
+            const img1 = "https://meshekatlan.com/wp-content/uploads/2026/06/Gemini_Bookcover-24-06-2026-14-35-25.png";
+            const img2 = "https://meshekatlan.com/wp-content/uploads/2026/06/Book-Cover-Ebook-20267.png"; 
+            
+            let isImg1 = true;
+            
+            // This automates the image swapping so the anchor tag can handle the external link
+            setInterval(() => {
+                isImg1 = !isImg1;
+                vibingImg.style.opacity = '0'; // Fade out
+                setTimeout(() => {
+                    vibingImg.src = isImg1 ? img1 : img2;
+                    vibingImg.style.opacity = '1'; // Fade in
+                }, 300); // Wait for fade out to complete before swapping source
+            }, 60000); // Swaps every 1 minute (60000 milliseconds)
+
             let allSystemVoices = [];
             let ttsState = 'idle'; 
             let currentChunks = [];
             let currentUtterance = null;
+
+            // --- LANGUAGE BOOTSTRAP (AUTO-DETECT + PERSIST) ---
+            const deviceLang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
+            const supportedLangs = ['en', 'es', 'hi', 'pt', 'it', 'fr', 'de', 'la'];
+            const savedLang = localStorage.getItem('jv_lang');
+
+            let activeLang = savedLang && supportedLangs.includes(savedLang)
+              ? savedLang
+              : (supportedLangs.includes(deviceLang) ? deviceLang : 'en');
+
+            // set initial selector value
+            langSelect.value = activeLang;
 
             // --- THEME ENGINE WITH GRADIENT OVERLAY ---
             const backgrounds = [
@@ -278,7 +320,7 @@
                 allSystemVoices = window.speechSynthesis.getVoices();
                 if (allSystemVoices.length === 0) return;
 
-                const selectedLangPrefix = langSelect.value; 
+                const selectedLangPrefix = activeLang; 
                 let searchPrefix = selectedLangPrefix === 'la' ? 'it' : selectedLangPrefix;
 
                 const filteredVoices = allSystemVoices.filter(v => v.lang.startsWith(searchPrefix));
@@ -303,7 +345,12 @@
                 });
             }
 
-            langSelect.addEventListener('change', updateVoiceList);
+            langSelect.addEventListener('change', () => {
+                activeLang = langSelect.value;
+                localStorage.setItem('jv_lang', activeLang);
+                updateVoiceList();
+            });
+            
             updateVoiceList();
             if (speechSynthesis.onvoiceschanged !== undefined) {
                 speechSynthesis.onvoiceschanged = updateVoiceList;
@@ -331,7 +378,8 @@
                     u.voice = allSystemVoices[globalVoiceIndex];
                     u.lang = u.voice.lang; 
                 } else {
-                    u.lang = langSelect.value === 'la' ? 'it-IT' : langSelect.value; 
+                    const langCode = activeLang === 'la' ? 'it-IT' : activeLang;
+                    u.lang = langCode;
                 }
                 
                 u.rate = parseFloat(document.getElementById('rate').value);
